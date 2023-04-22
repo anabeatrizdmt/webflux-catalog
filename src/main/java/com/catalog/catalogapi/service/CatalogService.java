@@ -32,6 +32,5 @@ public class CatalogService {
 
     public Mono<Product> findById(String id) {
         return repository.findById(id);
-
     }
 }

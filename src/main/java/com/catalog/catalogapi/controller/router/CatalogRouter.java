@@ -21,6 +21,7 @@ public class CatalogRouter {
     public RouterFunction<ServerResponse> routes() {
         return RouterFunctions
                 .route(POST("/catalog"), catalogHandler::save)
+                .andRoute(GET("/catalog"), catalogHandler::getAll)
                 .andRoute(GET("/catalog/{id}"), catalogHandler::findById);
     }
 }
