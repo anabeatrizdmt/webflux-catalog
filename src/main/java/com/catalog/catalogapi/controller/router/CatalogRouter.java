@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
 
 @Configuration
 @RequiredArgsConstructor
@@ -19,7 +20,7 @@ public class CatalogRouter {
     @Bean
     public RouterFunction<ServerResponse> routes() {
         return RouterFunctions
-                .route(GET("/catalog"), catalogHandler::getAll)
-                .andRoute(GET("/catalog/{id}"), catalogHandler::getById);
+                .route(POST("/catalog"), catalogHandler::save)
+                .andRoute(GET("/catalog/{id}"), catalogHandler::findById);
     }
 }
