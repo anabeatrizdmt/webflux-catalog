@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Service
@@ -28,15 +29,38 @@ public class CatalogHandler {
 
     }
 
+    public Mono<ServerResponse> getAll(ServerRequest request) {
+        Flux<CatalogResponse> catalogResponses = catalogService
+                .getAll()
+                .map(product -> CatalogResponse.builder()
+                        .id(product.getId())
+                        .name(product.getName())
+                        .price(product.getPrice())
+                        .availableQuantity(product.getAvailableQuantity())
+                        .build());
+
+        return ServerResponse
+                .ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromPublisher(catalogResponses, CatalogResponse.class));
+    }
+
     public Mono<ServerResponse> findById(ServerRequest request) {
 
         String id = request.pathVariable("id");
+        Mono<CatalogResponse> responseMono = catalogService.findById(id)
+                .map(product -> new CatalogResponse(
+                        product.getId(),
+                        product.getName(),
+                        product.getPrice(),
+                        product.getAvailableQuantity()
+                ));
 
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters
-                        .fromPublisher(catalogService.findById(id), CatalogResponse.class));
+                        .fromPublisher(responseMono, CatalogResponse.class));
 
     }
 
