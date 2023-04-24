@@ -1,6 +1,7 @@
 package com.catalog.catalogapi.service;
 
 import com.catalog.catalogapi.dto.CatalogRequest;
+import com.catalog.catalogapi.dto.ProductUpdateRequest;
 import com.catalog.catalogapi.model.Product;
 import com.catalog.catalogapi.repository.CatalogRepository;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +38,19 @@ public class CatalogService {
 
     public Flux<Product> getStock(List<String> ids) {
         return repository.findAllById(ids);
+    }
+
+    public Mono<Product> updateProductStock(String productId, Long purchasedQuantity) {
+
+        return repository.findById(productId)
+                .flatMap(product -> {
+                    Long currentStock = product.getAvailableQuantity();
+                    if (currentStock < purchasedQuantity) {
+                        throw new IllegalArgumentException("Not enough stock for product: " + productId);
+                    }
+                    Long newStock = currentStock - purchasedQuantity;
+                    product.setAvailableQuantity(newStock);
+                    return repository.save(product);
+                });
     }
 }

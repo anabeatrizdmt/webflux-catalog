@@ -22,6 +22,7 @@ public class CatalogRouter {
                 .route(POST("/catalog"), catalogHandler::save)
                 .andRoute(GET("/catalog"), catalogHandler::getAll)
                 .andRoute(GET("/catalog/{id}"), catalogHandler::findById)
-                .andRoute(POST("/catalog/stock"), catalogHandler::getStock);
+                .andRoute(POST("/catalog/stock"), catalogHandler::getStock)
+                .andRoute(POST("catalog/update-stock"), catalogHandler::updateStock);
     }
 }

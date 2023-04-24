@@ -2,6 +2,7 @@ package com.catalog.catalogapi.controller.handler;
 
 import com.catalog.catalogapi.dto.CatalogRequest;
 import com.catalog.catalogapi.dto.CatalogResponse;
+import com.catalog.catalogapi.dto.ProductUpdateRequest;
 import com.catalog.catalogapi.dto.StockRequest;
 import com.catalog.catalogapi.model.Product;
 import com.catalog.catalogapi.service.CatalogService;
@@ -9,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -76,5 +78,19 @@ public class CatalogHandler {
                 .flatMapMany(catalogService::getStock);
 
         return ServerResponse.ok().body(products, Product.class);
+    }
+
+    public Mono<ServerResponse> updateStock(ServerRequest request) {
+        Mono<List<ProductUpdateRequest>> productUpdateRequestList = request.bodyToFlux(ProductUpdateRequest.class).collectList();
+        return productUpdateRequestList
+                .flatMap(productUpdates -> {
+                    for (ProductUpdateRequest update : productUpdates) {
+                        String productId = update.getProductId();
+                        Long purchasedQuantity = (long) update.getPurchasedQuantity();
+                        catalogService.updateProductStock(productId, purchasedQuantity).subscribe();
+                    }
+                    return ServerResponse.ok().build();
+                })
+                .onErrorResume(error -> ServerResponse.badRequest().build());
     }
 }
