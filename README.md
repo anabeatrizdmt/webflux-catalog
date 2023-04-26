@@ -4,6 +4,19 @@ This project is a reactive RESTful API for managing a product catalog. It is wri
 
 **Note:** This API is part of a larger e-commerce system that includes user management and order management. To run the complete system, you must also run the [WebFlux Users API](https://github.com/anabeatrizdmt/webflux-users), the [WebFlux Orders API](https://github.com/anabeatrizdmt/webflux-orders), and the [WebFlux E-commerce API Gateway](https://github.com/anabeatrizdmt/webflux-ecommerce-api-gateway). The API Gateway provides a unified interface to the entire system and manages communication between the individual APIs.
 
+
+## Table of Contents
+
+- [Requirements](#requirements)
+- [Installation and Setup](#installation-and-setup)
+- [Usage](#usage)
+  - [Create a product](#create-a-product)
+  - [Get all products](#get-all-products)
+  - [Get a product by ID](#get-a-product-by-id)
+  - [Check product stock](#check-product-stock)
+  - [Update product stock](#update-product-stock)
+
+
 ## Requirements
 
 - Java 11 or higher
